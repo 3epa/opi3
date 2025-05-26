@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="web.AreaCheckerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-05-26T00:31:15.809Z" hostname="LAPTOP-3FRLVTGO" time="0.034">
+<testsuite name="web.AreaCheckerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-05-26T00:34:26.532Z" hostname="LAPTOP-3FRLVTGO" time="0.033">
   <properties/>
-  <testcase name="testHitInCircle()" classname="web.AreaCheckerTest" time="0.027"/>
+  <testcase name="testHitInCircle()" classname="web.AreaCheckerTest" time="0.025"/>
   <testcase name="testHitInTriangle()" classname="web.AreaCheckerTest" time="0.001"/>
-  <testcase name="testHitInRectangle()" classname="web.AreaCheckerTest" time="0.0"/>
+  <testcase name="testHitInRectangle()" classname="web.AreaCheckerTest" time="0.001"/>
   <testcase name="testMissAllAreas()" classname="web.AreaCheckerTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
