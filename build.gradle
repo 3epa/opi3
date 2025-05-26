@@ -53,6 +53,20 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = projectEncoding
 }
 
+tasks.register('compile') {
+    description = 'Compiles all Java sources'
+    group = 'Build'
+    dependsOn compileJava
+
+    doFirst {
+        logger.lifecycle("===== COMPILING JAVA SOURCES =====")
+    }
+
+    doLast {
+        logger.lifecycle("===== COMPILATION COMPLETED =====")
+    }
+}
+
 build {
     dependsOn war
 }
@@ -150,21 +164,32 @@ tasks.register('xml', DefaultTask) {
     }
 }
 
-tasks.register('report', Exec) {
+tasks.register('gitAddReport', Exec) {
     dependsOn test
 
+    executable = 'git'
+    args 'add', "${reportDir}"
+
     doFirst {
-        logger.lifecycle("===== REPORT TASK =====")
+        logger.lifecycle("===== ADDING TEST REPORTS TO GIT =====")
+    }
+}
 
-        def testResultsDir = file(reportDir)
-        if (!testResultsDir.exists()) {
-            throw new GradleException("Test results directory not found: ${testResultsDir.path}")
-        }
+tasks.register('gitCommitReport', Exec) {
+    dependsOn gitAddReport
 
-        commandLine 'git', 'add', "${reportDir}"
+    executable = 'git'
+    args 'commit', '-m', "Add test results from ${new Date().format("yyyy-MM-dd HH:mm:ss")}"
 
-        commandLine 'git', 'commit', '-m', "Add test results from ${new Date().format("yyyy-MM-dd HH:mm:ss")}"
+    doFirst {
+        logger.lifecycle("===== COMMITTING TEST REPORTS =====")
+    }
+}
 
+tasks.register('report') {
+    dependsOn gitCommitReport
+
+    doLast {
         logger.lifecycle("===== REPORT TASK COMPLETED =====")
     }
 }
