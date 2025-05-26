@@ -1,0 +1,110 @@
+body {
+    background-color: #FBEAEB;
+    font-family: Georgia;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#header {
+    height: 10%;
+    background-color: #2F3C7E;
+    color: #FBEAEB;
+    font-family: fantasy;
+    -webkit-text-stroke: 0.1px #000000;
+    letter-spacing: 1px;
+}
+
+#header th {
+    font-size: 25px;
+    padding: 20px;
+}
+
+#author {
+    text-align: left;
+}
+
+#name {
+    text-align: center;
+}
+
+#option {
+    text-align: right;
+}
+
+#main {
+    top: 10px;
+    font-size: 20px;
+}
+
+#main td {
+    text-align: left;
+}
+
+#main tr {
+    margin: 10px;
+}
+
+.button {
+    background-color: rgba(47, 60, 126, 1);
+    color: #FBEAEB;
+    padding: 10px;
+    margin: 10px;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
+
+input[type="text"] {
+    background-color: rgba(47, 60, 126, 1);
+    color: #FBEAEB;
+    width: 100%;
+}
+
+input[type="text"]::placeholder {
+    color: #FBEAEB
+}
+
+#y:hover {
+    opacity:0.9;
+}
+
+#myForm\:submit {
+    color: #1E2921;
+    background-color: #A7BEAE;
+    opacity: 1;
+    width: 100%;
+}
+
+#submit:hover {
+    opacity: 0.9;
+}
+
+#graphic {
+    border-radius: 10px;
+    border: 1px solid;
+}
+
+#error {
+    text-align: left;
+    color: red;
+    display: none;
+}
+
+#result {
+    background-color: #2F3C7E;
+    color: #FBEAEB;
+}
+
+#result td, #result th {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+.label {
+    text-align: left;
+}

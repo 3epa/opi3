@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+
+    <title>Лабораторная работа №3</title>
+    <meta name="author" content="Ребрый Егор Сергеевич"></meta>
+    <meta name="description" content="Веб программирование: Лабораторная работа №3"></meta>
+    <meta name="keywords" content="ПИиКТ, ВТ, SE, ITMO, ИТМО"></meta>
+
+    <link rel="icon" type="image/jpg" href="#{resource['images/pug.png']}"/>
+    <h:outputStylesheet name="css/styles.css"/>
+</h:head>
+<h:body>
+    <div>
+        <table id="header">
+            <tr>
+                <th style="width: 33%" id="author"> ФИО: Ребрый Егор Сергеевич <br> Группа: P3209</br></th>
+                <th style="width: 33%" id="name"> Лабораторная работа №3</th>
+                <th style="width: 33%" id="option"> Вариант: 837632</th>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h:form id="myForm">
+            <table id="main">
+                <tr>
+                    <td>
+                        <div>
+                        <b><h:outputText value="Выберите X: " class="label"/></b>
+                        <br/>
+                        <b><h:outputText id="x" value="#{pointBean.newPoint.x}" class="label"/></b>
+                        </div>
+                    </td>
+                    <td>
+                        <h:commandButton value="-3.0" type="button" action="#{pointBean.newPoint.setX(-3)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="-2.0" type="button" action="#{pointBean.newPoint.setX(-2)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="-1.0" type="button" action="#{pointBean.newPoint.setX(-1)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="0" type="button" action="#{pointBean.newPoint.setX(0)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="1.0" type="button" action="#{pointBean.newPoint.setX(1)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="2.0" type="button" action="#{pointBean.newPoint.setX(2)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                        <h:commandButton value="3.0" type="button" action="#{pointBean.newPoint.setX(3)}" class="button">
+                            <f:ajax event="click" render="x"/>
+                        </h:commandButton>
+                    </td>
+                    <td rowspan="3">
+                        <canvas id="graph" height="320px" width="320px"></canvas>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b><h:outputLabel for="y" value="Выберите Y (от -3 до 3): " class="label"/></b>
+                    </td>
+                    <td>
+                      </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b><h:outputText value="Выберите R: " class="label"/></b>
+                    </td>
+                    <td>
+                        <h:selectOneRadio id="r" value="#{pointBean.newPoint.r}" required="true">
+                            <f:selectItem itemLabel="1" itemValue="1"/>
+                            <f:selectItem itemLabel="1.5" itemValue="1.5"/>
+                            <f:selectItem itemLabel="2" itemValue="2"/>
+                            <f:selectItem itemLabel="2.5" itemValue="2.5"/>
+                            <f:selectItem itemLabel="3" itemValue="3"/>
+                        </h:selectOneRadio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:commandButton value="Submit" id="submit" styleClass="button" action="#{pointBean.addPoint()}">
+                            <f:ajax execute="myForm" render="result x" onevent="drawPoints"/>
+                        </h:commandButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p id="error" class="label"></p>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+        <h:form>
+            <h:commandButton value="Начальная страница" styleClass="button" action="index"/>
+        </h:form>
+    </div>
+
+    <h:dataTable id="result" value="#{tableBean.points}" var="item">
+        <h:column>
+            <f:facet name="header">X</f:facet>
+            #{item.x}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Y</f:facet>
+            #{item.y}
+        </h:column>
+        <h:column>
+            <f:facet name="header">R</f:facet>
+            #{item.r}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Result</f:facet>
+            <h:outputText value="#{item.result ? 'Да' : 'Нет'}" style="color: #{item.result ? 'green' : 'red'}" />
+        </h:column>
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            <h:outputText value="#{item.id}"/>
+        </h:column>
+    </h:dataTable>
+    <!-- Первое правило тайной комнаты - никто не должен знать о тайной комнате -->
+    <h:form id="chamber-of-secrets">
+        <h:inputHidden id="hiddenX" value="#{pointBean.newPoint.x}" />
+        <h:inputHidden id="hiddenY" value="#{pointBean.newPoint.y}" />
+        <h:inputHidden id="hiddenR" value="#{pointBean.newPoint.r}" />
+
+        <h:commandButton id="hiddenSubmit" action="#{pointBean.addPoint()}" style="display:none">
+            <f:ajax render="result" execute="chamber-of-secrets" onevent="drawPoints" />
+        </h:commandButton>
+    </h:form>
+    <h:outputScript name="graph.js" library="js"/>
+    <h:outputScript name="validation.js" library="js"/>
+    <h:outputScript name="main.js" library="js"/>
+</h:body>
+</html>

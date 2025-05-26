@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8"> </meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> </meta>
+
+    <title>Лабораторная работа №3</title>
+    <meta name="author" content="Ребрый Егор Сергеевич"></meta>
+    <meta name="description" content="Веб программирование: Лабораторная работа №3"></meta>
+    <meta name="keywords" content="ПИиКТ, ВТ, SE, ITMO, ИТМО"></meta>
+
+    <link rel="icon" type="image/jpg" href="#{resource['images/paw.png']}"/>
+    <h:outputStylesheet name="css/styles.css"/>
+</h:head>
+<h:body>
+    <div>
+        <table id="header">
+            <tr>
+                <th style="width: 33%" id="author"> ФИО: Ребрый Егор Сергеевич <br> Группа: P3209</br></th>
+                <th style="width: 33%" id="name"> Лабораторная работа №3</th>
+                <th style="width: 33%" id="option"> Вариант: 837632</th>
+            </tr>
+        </table>
+    </div>
+    <div id="clock">
+    </div>
+    <h:form id="form">
+        <h:commandButton value="Главная" class="button" action="main"/>
+    </h:form>
+    <h:outputScript name="clock.js" library="js"/>
+</h:body>
+</html>
