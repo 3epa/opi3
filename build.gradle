@@ -1,0 +1,195 @@
+import org.xml.sax.helpers.DefaultHandler
+import javax.xml.parsers.SAXParserFactory
+
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'web'
+version = projectVersion
+description = projectName
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.sun.faces:jsf-api:2.2.18'
+    implementation 'com.sun.faces:jsf-impl:2.2.18'
+    implementation 'org.hibernate:hibernate-core:6.5.2.Final'
+    implementation 'org.postgresql:postgresql:42.7.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.0-M2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.0-M2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = projectEncoding
+}
+
+tasks.register('compile') {
+    description = 'Compiles all Java sources'
+    group = 'Build'
+    dependsOn compileJava
+
+    doFirst {
+        logger.lifecycle("===== COMPILING JAVA SOURCES =====")
+    }
+
+    doLast {
+        logger.lifecycle("===== COMPILATION COMPLETED =====")
+    }
+}
+
+build {
+    dependsOn war
+}
+
+war {
+    archiveBaseName = projectName
+    archiveVersion = project.version
+    destinationDirectory = file(distDir)
+
+    manifest {
+        attributes(
+                'Implementation-Version': project.version,
+                'Implementation-Title': projectName,
+                'Main-Class': mainClassName,
+        )
+    }
+
+    doFirst {
+        println "===== BUILD WAR ====="
+    }
+}
+
+clean {
+    delete file(distDir)
+    delete file(reportDir)
+    println "===== CLEAN COMPLETED ====="
+}
+
+test {
+    useJUnitPlatform()
+
+    reports {
+        junitXml.required = true
+        junitXml.outputLocation = file(reportDir)
+        html.required = false
+    }
+
+    doFirst {
+        file(reportDir).mkdirs()
+        logger.lifecycle '===== RUN TESTS ====='
+    }
+
+    failFast = false
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.register('xml', DefaultTask) {
+    description = 'Validate XML files'
+    group = 'Validation'
+
+    def projectDirFile = project.projectDir
+
+    inputs.files(
+            project.fileTree(projectDirFile) {
+                include '**/*.xml'
+                exclude '.idea/**'
+                exclude 'build/**'
+                exclude '.gradle/**'
+            }
+    ).withPathSensitivity(PathSensitivity.RELATIVE)
+
+    doLast {
+        logger.lifecycle '===== VALIDATE XML FILES ====='
+        try {
+            def parserFactory = SAXParserFactory.newInstance()
+            parserFactory.setValidating(false)
+            parserFactory.setNamespaceAware(true)
+            try {
+                parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            } catch (Exception e) {
+                logger.debug("${e.message}")
+            }
+
+            def parser = parserFactory.newSAXParser()
+            def handler = new DefaultHandler()
+
+            inputs.files.each { xmlFile ->
+                String relativePath = projectDirFile.toPath().relativize(xmlFile.toPath()).toString()
+                logger.info "Validate XML: ${xmlFile.absolutePath}"
+                try {
+                    parser.parse(xmlFile, handler)
+                } catch (Exception e) {
+                    new GradleException("XML validation failed for ${relativePath}: ${e.message}", e)
+                }
+            }
+            logger.lifecycle '===== VALIDATE XML FILES COMPLETED ====='
+        } catch (Exception e) {
+            new GradleException("Failed to setup XML parser: ${e.message}", e)
+        }
+    }
+}
+
+tasks.register('gitAddReport', Exec) {
+    dependsOn test
+
+    executable = 'git'
+    args 'add', "${reportDir}"
+
+    doFirst {
+        logger.lifecycle("===== ADDING TEST REPORTS TO GIT =====")
+    }
+}
+
+tasks.register('gitCommitReport', Exec) {
+    dependsOn gitAddReport
+
+    executable = 'git'
+    args 'commit', '-m', "Add test results from ${new Date().format("yyyy-MM-dd HH:mm:ss")}"
+
+    doFirst {
+        logger.lifecycle("===== COMMITTING TEST REPORTS =====")
+    }
+}
+
+tasks.register('report') {
+    dependsOn gitCommitReport
+
+    doLast {
+        logger.lifecycle("===== REPORT TASK COMPLETED =====")
+    }
+}
